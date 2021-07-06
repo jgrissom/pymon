@@ -20,10 +20,14 @@ class Pymon():
     def reset(self):
         self.leds[GREEN].on()
         self.status = READY
+    def start(self):
+        self.status = BUSY
+        self.leds[GREEN].off()
         
 def press_button(idx):
     if pymon.status == READY and idx == GREEN:
         print('start game')
+        pymon.start()
 
 async def main():
     for i in range(len(pymon.btns)):
