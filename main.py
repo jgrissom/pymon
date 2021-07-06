@@ -40,9 +40,15 @@ class Pymon():
         self.player.append(idx)
         # compare the player and machine lists
         if self.player == self.machine[0:len(self.player)]:
-            print('YES')
+            if len(self.player) == len(self.machine):
+                print('round completed')
+                # reset player list
+                self.player = []
+                sleep(.8)
+                self.iterate()
+            self.status = ACTIVE
         else:
-            print('NO')        
+            print('GAME OVER')     
 def press_button(idx):
     if pymon.status == ACTIVE:
         print(idx)
