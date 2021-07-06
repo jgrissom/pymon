@@ -4,6 +4,7 @@ from machine import Pin, PWM
 from output import Output
 from time import sleep
 from random import randint
+import wifi
 
 # define globals
 READY = 0
@@ -11,6 +12,9 @@ ACTIVE = 1
 BUSY = 2
 GREEN = 1
 PWM_DUTY = 10
+SSID = "ssid"
+PASSWORD = "password"
+TIMEOUT = 5000
 
 class Pymon():
     def __init__(self):
@@ -24,6 +28,8 @@ class Pymon():
         # red: A (4th octave), green: E (3rd octave), blue: E (4th octave), yellow: C# (4th octave)
         self.notes = [440, 165, 330, 277]
         self.status = BUSY
+        self.wifi_connected = False
+        self.wifi_attempts = 0
     def reset(self):
         self.leds[GREEN].on()
         self.status = READY
@@ -74,6 +80,10 @@ class Pymon():
             self.pwm.duty(PWM_DUTY)
             sleep(.5)
             self.pwm.duty(0)
+            # connect wifi
+            if self.wifi_connected == False and self.wifi_attempts == 0:
+                self.wifi_attempts = 1
+                self.wifi_connected = wifi.connect(SSID, PASSWORD, TIMEOUT)
             # turn leds off
             for led in self.leds:
                 led.off()
