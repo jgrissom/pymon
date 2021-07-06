@@ -18,6 +18,7 @@ PASSWORD = "password"
 TIMEOUT = 5000
 COLOR_RED = (255, 0, 0, .5)
 COLOR_GREEN = (0, 255, 0, .5)
+NAME = "Charlie Brown"
 
 class Pymon():
     def __init__(self):
@@ -101,7 +102,16 @@ class Pymon():
                 led.off()
             self.reset() 
     def post_results(self):
-        print(self.player_total)    
+        # post score to website
+        import urequests as requests
+        import ujson as json
+        base_url = 'https://pymonscore.azurewebsites.net/'
+        payload = { 'total': self.player_total, 'name': NAME }
+        hdr = { 'Content-Type': 'application/json' }
+        print(payload)
+        r = requests.post(base_url + '/api/score', headers = hdr, data = json.dumps(payload))
+        print(r.status_code)
+        print(r.text)
 def press_button(idx):
     if pymon.status == ACTIVE:
         print(idx)
