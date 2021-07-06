@@ -2,6 +2,8 @@ import uasyncio as asyncio
 from async_switch import Switch
 from machine import Pin
 from output import Output
+from time import sleep
+from random import randint
 
 # define globals
 READY = 0
@@ -23,6 +25,14 @@ class Pymon():
     def start(self):
         self.status = BUSY
         self.leds[GREEN].off()
+        self.machine = []
+        sleep(.5)
+        self.iterate()
+    def iterate(self):
+        self.status = BUSY
+        self.machine.append(randint(0, 3))
+        print(self.machine)
+        self.status = ACTIVE
         
 def press_button(idx):
     if pymon.status == READY and idx == GREEN:
