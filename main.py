@@ -35,7 +35,9 @@ class Pymon():
         self.status = ACTIVE
         
 def press_button(idx):
-    if pymon.status == READY and idx == GREEN:
+    if pymon.status == ACTIVE:
+        print(idx)
+    elif pymon.status == READY and idx == GREEN:
         print('start game')
         pymon.start()
 
