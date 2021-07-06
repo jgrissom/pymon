@@ -64,7 +64,20 @@ class Pymon():
                 self.iterate()
             self.status = ACTIVE
         else:
-            print('GAME OVER')     
+            print('GAME OVER')
+            # turn leds on
+            for led in self.leds:
+                led.on()
+            sleep(.2)
+            # play pwm sound
+            self.pwm.freq(123)
+            self.pwm.duty(PWM_DUTY)
+            sleep(.5)
+            self.pwm.duty(0)
+            # turn leds off
+            for led in self.leds:
+                led.off()
+            self.reset()     
 def press_button(idx):
     if pymon.status == ACTIVE:
         print(idx)
