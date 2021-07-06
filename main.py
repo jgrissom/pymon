@@ -43,6 +43,7 @@ class Pymon():
         self.leds[GREEN].off()
         self.machine = []
         self.player = []
+        self.player_total = 0
         sleep(.5)
         self.iterate()
     def iterate(self):
@@ -67,6 +68,7 @@ class Pymon():
         self.flicker(idx)
         # compare the player and machine lists
         if self.player == self.machine[0:len(self.player)]:
+            self.player_total += 1
             if len(self.player) == len(self.machine):
                 print('round completed')
                 # reset player list
@@ -91,12 +93,15 @@ class Pymon():
                 self.wifi_connected = wifi.connect(SSID, PASSWORD, TIMEOUT)
             if self.wifi_connected:
                 self.dotstar.on(COLOR_GREEN)
+                self.post_results()
             else:
                 self.dotstar.on(COLOR_RED)
             # turn leds off
             for led in self.leds:
                 led.off()
-            self.reset()     
+            self.reset() 
+    def post_results(self):
+        print(self.player_total)    
 def press_button(idx):
     if pymon.status == ACTIVE:
         print(idx)
