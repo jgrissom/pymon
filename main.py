@@ -33,11 +33,18 @@ class Pymon():
         self.status = BUSY
         self.machine.append(randint(0, 3))
         print(self.machine)
+        for i in range(len(self.machine)):
+            self.flicker(self.machine[i])
+            sleep(.2)
         self.status = ACTIVE
-        
+    def flicker(self, idx):
+        self.leds[idx].on()
+        sleep(.2)
+        self.leds[idx].off()
     def verify(self, idx):
         self.status = BUSY
         self.player.append(idx)
+        self.flicker(idx)
         # compare the player and machine lists
         if self.player == self.machine[0:len(self.player)]:
             if len(self.player) == len(self.machine):
