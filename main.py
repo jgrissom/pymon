@@ -5,6 +5,7 @@ from output import Output
 from time import sleep
 from random import randint
 import wifi
+from internal import TinyPICODotStar
 
 # define globals
 READY = 0
@@ -15,6 +16,8 @@ PWM_DUTY = 10
 SSID = "ssid"
 PASSWORD = "password"
 TIMEOUT = 5000
+COLOR_RED = (255, 0, 0, .5)
+COLOR_GREEN = (0, 255, 0, .5)
 
 class Pymon():
     def __init__(self):
@@ -30,6 +33,8 @@ class Pymon():
         self.status = BUSY
         self.wifi_connected = False
         self.wifi_attempts = 0
+        self.dotstar = TinyPICODotStar()
+        self.dotstar.off()
     def reset(self):
         self.leds[GREEN].on()
         self.status = READY
@@ -84,6 +89,10 @@ class Pymon():
             if self.wifi_connected == False and self.wifi_attempts == 0:
                 self.wifi_attempts = 1
                 self.wifi_connected = wifi.connect(SSID, PASSWORD, TIMEOUT)
+            if self.wifi_connected:
+                self.dotstar.on(COLOR_GREEN)
+            else:
+                self.dotstar.on(COLOR_RED)
             # turn leds off
             for led in self.leds:
                 led.off()
@@ -112,5 +121,6 @@ if __name__ == '__main__':
         print("goodbye")
         for led in pymon.leds:
             led.off()
+        pymon.dotstar.kill()
         pymon.pwm.duty(0)
         pymon.pwm.deinit()
