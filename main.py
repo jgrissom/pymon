@@ -26,6 +26,7 @@ class Pymon():
         self.status = BUSY
         self.leds[GREEN].off()
         self.machine = []
+        self.player = []
         sleep(.5)
         self.iterate()
     def iterate(self):
@@ -34,9 +35,18 @@ class Pymon():
         print(self.machine)
         self.status = ACTIVE
         
+    def verify(self, idx):
+        self.status = BUSY
+        self.player.append(idx)
+        # compare the player and machine lists
+        if self.player == self.machine[0:len(self.player)]:
+            print('YES')
+        else:
+            print('NO')        
 def press_button(idx):
     if pymon.status == ACTIVE:
         print(idx)
+        pymon.verify(idx)
     elif pymon.status == READY and idx == GREEN:
         print('start game')
         pymon.start()
