@@ -1,6 +1,6 @@
 import uasyncio as asyncio
 from async_switch import Switch
-from machine import Pin
+from machine import Pin, PWM
 from output import Output
 from time import sleep
 from random import randint
@@ -10,6 +10,7 @@ READY = 0
 ACTIVE = 1
 BUSY = 2
 GREEN = 1
+PWM_DUTY = 10
 
 class Pymon():
     def __init__(self):
@@ -17,7 +18,11 @@ class Pymon():
         self.leds = [ Output( Pin(26, Pin.OUT) ), Output( Pin(27, Pin.OUT) ), Output( Pin(15, Pin.OUT) ), Output( Pin(14, Pin.OUT) ) ]
         for led in self.leds:
             led.off()
-            
+        # init PWM (freq = 0, duty = 0)
+        self.pwm = PWM(Pin(25, Pin.OUT))
+        self.pwm.duty(0)
+        # red: A (4th octave), green: E (3rd octave), blue: E (4th octave), yellow: C# (4th octave)
+        self.notes = [440, 165, 330, 277]
         self.status = BUSY
     def reset(self):
         self.leds[GREEN].on()
@@ -38,9 +43,13 @@ class Pymon():
             sleep(.2)
         self.status = ACTIVE
     def flicker(self, idx):
+        self.pwm.freq(self.notes[idx])
+        self.pwm.duty(PWM_DUTY)
         self.leds[idx].on()
         sleep(.2)
         self.leds[idx].off()
+        self.pwm.duty(0)
+        sleep(.01)
     def verify(self, idx):
         self.status = BUSY
         self.player.append(idx)
@@ -78,3 +87,7 @@ if __name__ == '__main__':
         asyncio.run(main())
     finally:
         print("goodbye")
+        for led in pymon.leds:
+            led.off()
+        pymon.pwm.duty(0)
+        pymon.pwm.deinit()
